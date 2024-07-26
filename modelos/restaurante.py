@@ -31,13 +31,22 @@ class Restaurante:
         self._ativo = not self._ativo
     
     def receber_avaliacao(self, client, note):
-        avaliacao = Avaliacao(client, note)
-        self._avaliacao.append(avaliacao)
+        try:
+            if 0 <= note <= 5:
+                avaliacao = Avaliacao(client, note)
+                self._avaliacao.append(avaliacao)
+            else:
+                raise ValueError('A nota não pode ser maior que 5.')
+        except ValueError as e:
+            print(f"Erro de valor: {e}")
+        except Exception as e:
+            print(f"Erro inesperado: {e}")
+
 
     @property
     def media_avaliacoes(self):
         if not self._avaliacao: 
-            return 0
+            return '-'
         soma_das_notas = sum(avaliacao._nota for avaliacao in self._avaliacao)
         quantidade_de_notas = len(self._avaliacao)
         return round(soma_das_notas / quantidade_de_notas, 1)
