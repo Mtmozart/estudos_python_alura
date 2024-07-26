@@ -1,3 +1,5 @@
+from modelos.avaliacao import Avaliacao
+
 class Restaurante:
     restaurantes = []
     
@@ -5,6 +7,7 @@ class Restaurante:
         self._nome = nome.title()
         self.categoria = categoria.upper()
         self._ativo = False
+        self._avaliacao = []
         Restaurante.restaurantes.append(self)
     
     def __str__(self) -> str:
@@ -14,9 +17,9 @@ class Restaurante:
     '''
     @classmethod
     def listar_restaurantes(cls):
-       print(f"{'Nome do restaurante'.ljust(25)} | {'Categoria'.ljust(25)} | {'Status'}")
+       print(f"{'Nome do restaurante'.ljust(25)} | {'Categoria'.ljust(25)} | {'Status'.ljust(25)} |{'Média'}")
        for restaurante in cls.restaurantes:
-           print(f'{restaurante._nome.ljust(25)} | {restaurante.categoria.ljust(25)} | {restaurante.ativo}')
+           print(f'{restaurante._nome.ljust(25)} | {restaurante.categoria.ljust(25)} | {restaurante.ativo.ljust(25)} | {str(restaurante.media_avaliacoes)}')
     '''Modifica o valor que será lido, falando mais amplamente, poderia fazer qualquer coisa aqui
        cool symbols: https://coolsymbol.com/ 
     '''
@@ -26,13 +29,18 @@ class Restaurante:
 
     def alternar_estado(self):
         self._ativo = not self._ativo
+    
+    def receber_avaliacao(self, client, note):
+        avaliacao = Avaliacao(client, note)
+        self._avaliacao.append(avaliacao)
 
+    @property
+    def media_avaliacoes(self):
+        if not self._avaliacao: 
+            return 0
+        soma_das_notas = sum(avaliacao._nota for avaliacao in self._avaliacao)
+        quantidade_de_notas = len(self._avaliacao)
+        return round(soma_das_notas / quantidade_de_notas, 1)
+       
 
-restaurate_praca = Restaurante('Praça', 'Gourmet');
-restaurate_praca.alternar_estado()
-restaurate_pizza = Restaurante('Pizza', 'Podrão');
-
-
-Restaurante.listar_restaurantes()
-
-
+        
